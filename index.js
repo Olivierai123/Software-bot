@@ -11,19 +11,20 @@ const path = require("path");
 const http = require("http");
 const qrcode = require("qrcode-terminal");
 
-// Keep Render Web Service running
 const PORT = process.env.PORT || 3000;
 
 http.createServer((req, res) => {
     res.writeHead(200);
     res.end("Olivier WhatsApp AI Bot is running!");
 }).listen(PORT, "0.0.0.0", () => {
-    console.log("Web server running on port " + PORT);
+    console.log("Olivier web server is running!");
 });
 
 async function startBot() {
     const { state, saveCreds } =
         await useMultiFileAuthState("session");
+
+    const method = (process.env.CONNECTION_METHOD || "qr").toLowerCase();
 
     const sock = makeWASocket({
         auth: {
@@ -39,12 +40,35 @@ async function startBot() {
 
     sock.ev.on("creds.update", saveCreds);
 
-    sock.ev.on("connection.update", (update) => {
+    let pairingRequested = false;
+
+    sock.ev.on("connection.update", async (update) => {
         const { connection, lastDisconnect, qr } = update;
 
-        if (qr) {
-            console.log("Scan this WhatsApp QR code:");
+        if (qr && !state.creds.registered && method === "qr") {
+            console.log("WHATSAPP QR CODE:");
             qrcode.generate(qr, { small: true });
+        }
+
+        if (
+            !state.creds.registered &&
+            method === "pairing" &&
+            !pairingRequested
+        ) {
+            pairingRequested = true;
+
+            try {
+                const number = process.env.PAIRING_NUMBER;
+
+                if (!number) {
+                    console.log("Please add PAIRING_NUMBER in Render.");
+                } else {
+                    const code = await sock.requestPairingCode(number);
+                    console.log("YOUR WHATSAPP PAIRING CODE:", code);
+                }
+            } catch (error) {
+                console.log("Pairing error:", error);
+            }
         }
 
         if (connection === "open") {
@@ -52,16 +76,14 @@ async function startBot() {
         }
 
         if (connection === "close") {
-            const shouldReconnect =
-                lastDisconnect?.error?.output?.statusCode !==
-                DisconnectReason.loggedOut;
+            const statusCode =
+                lastDisconnect?.error?.output?.statusCode;
 
-            console.log("Connection closed.");
-
-            if (shouldReconnect) {
-                setTimeout(startBot, 5000);
+            if (statusCode === DisconnectReason.loggedOut) {
+                console.log("WhatsApp logged out. Please reconnect.");
             } else {
-                console.log("WhatsApp logged out. Reconnect required.");
+                console.log("Connection closed. Reconnecting...");
+                setTimeout(startBot, 5000);
             }
         }
     });
