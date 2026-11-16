@@ -8,9 +8,8 @@ async function startSoftware(){
   const sock = makeWASocket({
     auth: state,
     logger: P({level:'silent'}),
-    printQRInTerminal: false,
-    browser: ["software", "Chrome", "1.0"]
-  })
+    printQRInTerminal: true,
+    
 
   sock.ev.on('creds.update', saveCreds)
   
