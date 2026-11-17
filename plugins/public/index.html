@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olivier Pairing</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <h1>OLIVIER BOT</h1>
+    <p>WhatsApp AI Bot Pairing Portal</p>
+
+    <section class="card">
+      <h2>Pair with WhatsApp</h2>
+      <input
+        id="phone"
+        type="tel"
+        placeholder="Country code + phone number"
+      >
+
+      <button id="pairBtn">Generate Pairing Code</button>
+      <div id="pairResult"></div>
+    </section>
+
+    <section class="card">
+      <h2>QR Code</h2>
+      <div id="qrResult">QR code will appear here.</div>
+    </section>
+
+    <p id="status">Status: Waiting for connection</p>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+  </html>
