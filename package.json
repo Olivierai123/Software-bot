@@ -1,2 +1,17 @@
 {
-  "
+"name": "software-bot",
+"version": "1.0.0",
+"description": "Olivier WhatsApp AI Bot",
+"main": "index.js",
+"scripts": {
+"start": "node index.js"
+},
+"dependencies": {
+"@whiskeysockets/baileys": "^6.7.8",
+"pino": "^8.16.2",
+"wa-sticker-formatter": "^4.4.4",
+"sharp": "^0.33.5",
+"qrcode-terminal": "^0.12.0",
+"qrcode": "^1.5.4"
+}
+}
