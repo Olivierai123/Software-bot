@@ -1,11 +1,22 @@
+# Dependencies
 node_modules/
+
+# WhatsApp authentication
 session/
+session-new/
 sessions/
 auth_info/
+
+# Private data
 data/
 .env
 .env.*
 !.env.example
+
+# Logs
 npm-debug.log*
 *.log
+
+# System files
 .DS_Store
+Thumbs.db
