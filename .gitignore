@@ -2,6 +2,7 @@ node_modules/
 session/
 sessions/
 auth_info/
+data/
 .env
 .env.*
 !.env.example
